@@ -1,4 +1,4 @@
-![hero](https://user-images.githubusercontent.com/12514384/152210433-0d603070-c01f-4750-a40c-cdac28afa2ee.gif)
+[![Hi there, I'm Paul. I write code.](https://user-images.githubusercontent.com/12514384/152210433-0d603070-c01f-4750-a40c-cdac28afa2ee.gif)](https://paulmorar.com/)
 
 
 Currently building high performance apps as well as high performance teams. Sometimes I write my thoughts [here](https://medium.com/@paulmorar).
