@@ -3,7 +3,7 @@
 
 Currently building high performance apps as well as high performance teams. Sometimes I write my thoughts [here](https://medium.com/@paulmorar).
 
-I am working in Fintech as a Lead Front-End Engineer. For more information about me check out [paulmorar.com](https://paulmorar.com/).
+I am working in Fintech as a Jack of all trades. For more information about me check out [paulmorar.com](https://paulmorar.com/).
 
 <!--
 **paulmorar/paulmorar** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
