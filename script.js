@@ -126,10 +126,7 @@ async function main() {
     repoData,
     lastYear
   );
-
-  // Hex color codes for the color blocks
-  const colors = ["2E2925", "F8E5CF", "C59F8C", "7A9C6E", "D0A47C"];
-  await updateReadme({ totalStars, totalCommitsInPastYear, colors });
+  await updateReadme({ totalStars, totalCommitsInPastYear });
 }
 
 main();
