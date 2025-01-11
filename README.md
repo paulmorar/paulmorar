@@ -1,21 +1,14 @@
-[![Hi there, I'm Paul. I write code.](https://user-images.githubusercontent.com/12514384/152210433-0d603070-c01f-4750-a40c-cdac28afa2ee.gif)](https://paulmorar.com/)
+<img align="left" src="https://github.com/user-attachments/assets/664ec341-9348-40a1-9334-83728431b70a"  width="300"/>
 
-
-Currently building high performance apps as well as high performance teams. Sometimes I write my thoughts [here](https://medium.com/@paulmorar).
-
-I am working in Fintech as a Jack of all trades. For more information about me check out [paulmorar.com](https://paulmorar.com/).
-
-<!--
-**paulmorar/paulmorar** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+```csharp
+paulmorar@github
+-------------------------
+OS: Arch Linux x86_64
+Shell: zsh 5.8
+Pronouns: He/Him
+Location: Copenhagen, DK
+Technologies used: Bash, JavaScript, TypeScript, Terraform, Golang, Azure Cloud, Entra ID, Powershell
+Hobbies: Brewing Beer, Snowboarding, Gaming
+Github Commits: 2
+Stars: 33
+```

@@ -1,0 +1,28 @@
+{
+  "name": "paulmorar",
+  "version": "1.0.0",
+  "description": "A profile README that kind of looks like a neofetch",
+  "main": "script.js",
+  "scripts": {
+    "generate": "node script.js",
+    "devstart": "nodemon script.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulmorar/paulmorar.git"
+  },
+  "author": "paulmorar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paulmorar/paulmorar/issues"
+  },
+  "homepage": "https://github.com/paulmorar/paulmorar#readme",
+  "dependencies": {
+    "@octokit/rest": "21.1.0",
+    "dotenv": "16.4.7",
+    "mustache": "4.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.9"
+  }
+}
