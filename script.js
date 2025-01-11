@@ -1,7 +1,7 @@
 require("dotenv").config();
-import { render } from "mustache";
-import { readFile, writeFileSync } from "fs";
-import { Octokit } from "@octokit/rest";
+const Mustache = require("mustache");
+const fs = require("fs");
+const { Octokit } = require("@octokit/rest");
 
 const octokit = new Octokit({
   auth: process.env.ACCESS_TOKEN,
@@ -100,14 +100,14 @@ function computeCommitsBeforeCutoff(contributorData, cutoffDate) {
 }
 
 async function updateReadme(userData) {
-  const TEMPLATE_PATH = "./main.mustache";
-  readFile(TEMPLATE_PATH, (err, data) => {
+  const TEMPLATE_PATH = "./template.mustache";
+  fs.readFile(TEMPLATE_PATH, (err, data) => {
     if (err) {
       throw err;
     }
 
-    const output = render(data.toString(), userData);
-    writeFileSync("README.md", output);
+    const output = Mustache.render(data.toString(), userData);
+    fs.writeFileSync("README.md", output);
   });
 }
 
