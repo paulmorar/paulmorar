@@ -13,7 +13,16 @@ const octokit = new Octokit({
   },
 });
 
-async function grabDataFromAllRepositories() {
+async function getUserData() {
+  const { data } = await octokit.rest.users.getAuthenticated();
+  return {
+    followers: data.followers,
+    following: data.following,
+    publicRepos: data.public_repos,
+  };
+}
+
+async function getDataFromAllRepositories() {
   // Options under "List repositories for the authenticated user"
   // https://octokit.github.io/rest.js/v18#authentication
   const options = {
@@ -115,7 +124,8 @@ async function updateReadme(userData) {
 }
 
 async function main() {
-  const repoData = await grabDataFromAllRepositories();
+  const userData = await getUserData();
+  const repoData = await getDataFromAllRepositories();
 
   const totalStars = calculateTotalStars(repoData);
 
@@ -126,7 +136,7 @@ async function main() {
     repoData,
     lastYear
   );
-  await updateReadme({ totalStars, totalCommitsInPastYear });
+  await updateReadme({ totalStars, totalCommitsInPastYear, ...userData });
 }
 
 main();
