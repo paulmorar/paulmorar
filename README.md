@@ -1,3 +1,7 @@
+```zsh
+> whoami
+```
+
 <img align="left" src="https://github.com/user-attachments/assets/664ec341-9348-40a1-9334-83728431b70a" width="300" /> 
 
 ```csharp
@@ -7,11 +11,12 @@ OS: Arch Linux x86_64
 Shell: zsh 5.8
 Pronouns: He/Him
 Location: Copenhagen, Denmark
-Technologies used: Bash, JavaScript, TypeScript,
-                   Terraform, Golang, Azure Cloud,
-                   Entra ID, Powershell
+Cloud Services: Azure Cloud, Entra ID
+Languages: Bash, JavaScript, TypeScript, Golang,
+           Ruby, Powershell, C#
+Currently doing: DevOps in FinTech
 Hobbies: Brewing Beer, Snowboarding, Baking
-Commits: 57
+Commits: 46
 Stars: 276
 Followers: 10
 Following: 13
