@@ -7,7 +7,7 @@
 ```csharp
 paulmorar@github
 -------------------------
-OS: Arch Linux x86_64
+OS: Ubuntu 24 x86_64
 Shell: zsh 5.8
 Pronouns: He/Him
 Location: Copenhagen, Denmark
@@ -16,7 +16,7 @@ Languages: Bash, JavaScript, TypeScript, Golang,
            Ruby, Powershell, C#
 Currently doing: DevOps in FinTech
 Hobbies: Brewing Beer, Snowboarding, Baking
-Commits: 46
+Commits: 47
 Stars: 276
 Followers: 10
 Following: 13
