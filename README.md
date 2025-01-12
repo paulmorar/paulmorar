@@ -11,6 +11,6 @@ Technologies used: Bash, JavaScript, TypeScript,
                    Terraform, Golang, Azure Cloud,
                    Entra ID, Powershell
 Hobbies: Brewing Beer, Snowboarding, Baking
-Commits: 41
+Commits: 36
 Stars: 276
 ```
