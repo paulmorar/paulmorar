@@ -16,8 +16,8 @@ Languages: Bash, JavaScript, TypeScript, Golang,
            Ruby, Powershell, C#
 Currently doing: DevOps in FinTech
 Hobbies: Brewing Beer, Snowboarding, Baking
-Commits: 9
-Stars: 283
+Commits: 11
+Stars: 284
 Followers: 10
 Following: 13
 Repositories: 34
