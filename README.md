@@ -18,7 +18,7 @@ Currently doing: DevOps in FinTech
 Hobbies: Brewing Beer, Snowboarding, Baking
 Commits: 0
 Stars: 314
-Followers: 10
+Followers: 9
 Following: 13
 Repositories: 34
 ```
