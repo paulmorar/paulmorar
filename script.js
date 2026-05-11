@@ -1,12 +1,28 @@
-require("dotenv").config();
-const Mustache = require("mustache");
-const fs = require("fs");
-const { Octokit } = require("@octokit/rest");
+import { readFile, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+import Mustache from "mustache";
+import { Octokit } from "@octokit/rest";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const TEMPLATE_PATH = resolve(__dirname, "template.mustache");
+const OUTPUT_PATH = resolve(__dirname, "README.md");
+const MS_PER_SECOND = 1000;
+
+function requireEnv(name) {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+  return value;
+}
+
+const accessToken = requireEnv("ACCESS_TOKEN");
+const username = requireEnv("USERNAME");
 
 const octokit = new Octokit({
-  auth: process.env.ACCESS_TOKEN,
-  userAgent: "readme v1.0.0",
-  baseUrl: "https://api.github.com",
+  auth: accessToken,
+  userAgent: "paulmorar-readme v2.0.0",
   log: {
     warn: console.warn,
     error: console.error,
@@ -23,120 +39,79 @@ async function getUserData() {
 }
 
 async function getDataFromAllRepositories() {
-  // Options under "List repositories for the authenticated user"
-  // https://octokit.github.io/rest.js/v18#authentication
-  const options = {
+  return octokit.paginate(octokit.rest.repos.listForAuthenticatedUser, {
     per_page: 100,
-  };
-
-  // https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
-  const request = await octokit.rest.repos.listForAuthenticatedUser(options);
-  return request.data;
+  });
 }
 
-function calculateTotalStars(data) {
-  const stars = data.map((repo) => repo.stargazers_count);
-  const totalStars = stars.reduce((sum, curr) => sum + curr, 0);
-  return totalStars;
+function calculateTotalStars(repos) {
+  return repos.reduce((sum, repo) => sum + (repo.stargazers_count ?? 0), 0);
 }
 
-async function calculateTotalCommits(data, cutoffDate) {
-  const contributorsRequests = [];
-  const githubUsername = process.env.USERNAME;
-
-  data.forEach((repo) => {
-    const options = {
-      owner: githubUsername,
+async function fetchContributorStats(repo) {
+  try {
+    const { data } = await octokit.rest.repos.getContributorsStats({
+      owner: username,
       repo: repo.name,
-    };
+    });
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.warn(`Failed to fetch stats for ${repo.name}: ${err.message}`);
+    return [];
+  }
+}
 
-    const lastRepoUpdate = new Date(repo.updated_at);
+function countCommitsForContributor(stats, cutoffDate) {
+  const entry = stats.find((item) => item?.author?.login === username);
+  if (!entry) return 0;
 
-    if (!cutoffDate || lastRepoUpdate > cutoffDate) {
-      // https://docs.github.com/en/rest/reference/repos#get-all-contributor-commit-activity
-      const repoStats = octokit.rest.repos.getContributorsStats(options);
+  if (!cutoffDate) return entry.total ?? 0;
 
-      contributorsRequests.push(repoStats);
-    }
-  });
+  return (entry.weeks ?? [])
+    .filter((week) => new Date(week.w * MS_PER_SECOND) > cutoffDate)
+    .reduce((sum, week) => sum + (week.c ?? 0), 0);
+}
 
-  const totalCommits = await getTotalCommits(
-    contributorsRequests,
-    githubUsername,
-    cutoffDate
+async function calculateTotalCommits(repos, cutoffDate) {
+  const eligibleRepos = cutoffDate
+    ? repos.filter((repo) => new Date(repo.updated_at) > cutoffDate)
+    : repos;
+
+  const statsByRepo = await Promise.all(
+    eligibleRepos.map(fetchContributorStats),
   );
-
-  return totalCommits;
+  return statsByRepo.reduce(
+    (total, stats) => total + countCommitsForContributor(stats, cutoffDate),
+    0,
+  );
 }
 
-async function getTotalCommits(requests, contributor, cutoffDate) {
-  const repos = await Promise.all(requests);
-  let totalCommits = 0;
-
-  repos.forEach((repo) => {
-    const contributorName = (item) => item.author.login === contributor;
-    if (!repo.data || !repo.data.length) {
-      return;
-    }
-    const indexOfContributor = repo.data.findIndex(contributorName);
-
-    if (indexOfContributor !== -1) {
-      const contributorStats = repo.data[indexOfContributor];
-      totalCommits += !cutoffDate
-        ? computeCommitsFromStart(contributorStats)
-        : computeCommitsBeforeCutoff(contributorStats, cutoffDate);
-    }
-  });
-
-  return totalCommits;
-}
-
-function computeCommitsFromStart(contributorData) {
-  return contributorData.total;
-}
-
-function computeCommitsBeforeCutoff(contributorData, cutoffDate) {
-  const olderThanCutoffDate = (week) => {
-    // week.w -> Start of the week, given as a Unix timestamp (which is in seconds)
-    const MILLISECONDS_IN_A_SECOND = 1000;
-    const milliseconds = week.w * MILLISECONDS_IN_A_SECOND;
-    const startOfWeek = new Date(milliseconds);
-    return startOfWeek > cutoffDate;
-  };
-
-  const newestWeeks = contributorData.weeks.filter(olderThanCutoffDate);
-  // week.c -> Number of commits in a week
-  const total = newestWeeks.reduce((sum, week) => sum + week.c, 0);
-
-  return total;
-}
-
-async function updateReadme(userData) {
-  const TEMPLATE_PATH = "./template.mustache";
-  fs.readFile(TEMPLATE_PATH, (err, data) => {
-    if (err) {
-      throw err;
-    }
-
-    const output = Mustache.render(data.toString(), userData);
-    fs.writeFileSync("README.md", output);
-  });
+async function renderReadme(view) {
+  const template = await readFile(TEMPLATE_PATH, "utf8");
+  const output = Mustache.render(template, view);
+  await writeFile(OUTPUT_PATH, output);
 }
 
 async function main() {
-  const userData = await getUserData();
-  const repoData = await getDataFromAllRepositories();
-
-  const totalStars = calculateTotalStars(repoData);
-
   const lastYear = new Date();
   lastYear.setFullYear(lastYear.getFullYear() - 1);
 
+  const [userData, repoData] = await Promise.all([
+    getUserData(),
+    getDataFromAllRepositories(),
+  ]);
+
+  const totalStars = calculateTotalStars(repoData);
   const totalCommitsInPastYear = await calculateTotalCommits(
     repoData,
-    lastYear
+    lastYear,
   );
-  await updateReadme({ totalStars, totalCommitsInPastYear, ...userData });
+
+  await renderReadme({ ...userData, totalStars, totalCommitsInPastYear });
+  console.log("README.md generated successfully.");
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
